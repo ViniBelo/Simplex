@@ -1,0 +1,24 @@
+Função de calcular custos relativos
+
+# Calcula os custos relativos
+def calcular_custos_relativos(lambdaT, aNj):
+    custos_relativos = []
+
+    for j in range(len(lambdaT)):
+        custo_relativo = fx[j] - np.dot(lambdaT, aNj[:, j])
+        custos_relativos.append(custo_relativo)
+
+    return custos_relativos
+
+# Chamar esta função na Fase I após calcular lambdaT
+custos_relativos = calcular_custos_relativos(lambdaT, x_N)
+
+aNj é a matriz contendo os coeficientes das variáveis não básicas nas restrições.
+A função calcular_custos_relativos calcula os custos relativos para cada variável não básica.
+
+A ideia é que você percorra todas as variáveis não básicas (colunas da matriz aNj) e, 
+para cada uma, calcule o custo relativo usando a fórmula da apostila.
+
+Depois de chamar a função calcular_custos_relativos, você terá uma lista custos_relativos que 
+contém os custos relativos para cada variável não básica. Isso é uma parte essencial do método 
+Simplex para decidir qual variável não básica entrar na base (tornar-se básica) no próximo passo da iteração.

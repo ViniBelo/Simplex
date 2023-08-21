@@ -62,6 +62,16 @@ def formulaProblemaArtificial ():
     # Desenvolver na sequência!
     return 0
 
+# 2.2) {custos relativos}
+def calcular_custos_relativos(lambdaT, aNj):
+    custos_relativos = []
+
+    for j in range(len(lambdaT)):
+        custo_relativo = fx[j] - np.dot(lambdaT, aNj[:, j])
+        custos_relativos.append(custo_relativo)
+    
+    return custos_relativos
+
 # Início da iteração simplex - Fase I
 def faseI ():
     # Passo 1: {cálculo da solução básica}
@@ -78,7 +88,14 @@ def faseI ():
     print(lambdaT)
 
     #     2.2) {custos relativos}
-    
+    custos_relativos = calcular_custos_relativos(lambdaT, x_N)
+    print(f'custos_relativos: {custos_relativos}')
+
+    #     2.3) {determinação da variável a entrar na base}
+    k = np.argmin(custos_relativos)  # Índice da variável com menor custo relativo
+    print(f'Variável a entrar na base: x_N{k+1}')
+
+
 
 
 if __name__ == '__main__':
