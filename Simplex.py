@@ -79,13 +79,13 @@ def faseI ():
     inversaB = np.linalg.inv(x_B)
     x_chapeu_B = multiplicacaoDeMatrizes(b, inversaB)
     x_chapeu_N = np.zeros(x_N.shape[1])
-    print(x_chapeu_B)
+    print(f'x_chapeu_B: {x_chapeu_B}')
 
     # Passo 2: {cálculo dos custos relativos}
     #     2.1) {vetor multiplicador simplex}
     cBT = fx
     lambdaT = multiplicacaoDeMatrizes(inversaB, cBT)
-    print(lambdaT)
+    print(f'lambdaT: {lambdaT}')
 
     #     2.2) {custos relativos}
     custos_relativos = calcular_custos_relativos(lambdaT, x_N)
@@ -100,6 +100,7 @@ def faseI ():
         print("Solução ótima encontrada.")
         return
 
+    
 
 
 
