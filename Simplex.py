@@ -95,6 +95,12 @@ def faseI ():
     k = np.argmin(custos_relativos)  # Índice da variável com menor custo relativo
     print(f'Variável a entrar na base: x_N{k+1}')
 
+    # Passo 3: {teste de otimalidade}
+    if all(custo >= 0 for custo in custos_relativos):
+        print("Solução ótima encontrada.")
+        return
+
+
 
 
 
