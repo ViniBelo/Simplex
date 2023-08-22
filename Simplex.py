@@ -40,7 +40,7 @@ def verificacaoFaseI (obj):
     if sinal:
         return faseI()
     else:
-        return 'Não é necessário entrar na Fase I'
+        return 'Não é necessário entrar na Fase I' # vai para fase 2
 
 
 # Formulação do problema artificial
@@ -77,9 +77,9 @@ def trocaColunas(x_B, x_N, c_B, c_NB, i, k):
 def faseI ():
     # Passo 1: {cálculo da solução básica}
     x_chapeu_B = np.zeros(n)
+    x_chapeu_N = np.zeros(x_N.shape[1])
     inversaB = np.linalg.inv(x_B)
     x_chapeu_B = np.dot(b, inversaB)
-    x_chapeu_N = np.zeros(x_N.shape[1])
     print(f'x_chapeu_B: {x_chapeu_B}')
     print(f'x_chapeu_N: {x_chapeu_N}')
 
@@ -101,10 +101,7 @@ def faseI ():
     # Passo 3: {teste de otimalidade}
     if all(custo >= 0 for custo in custos_relativos):
         print('Solução ótima encontrada.')
-        #return 0
-    else:
-        'Solução não é ótima.'
-        #return faseII()
+        #break
     
     # Passo 4: {cálculo da direção simplex}
     y = np.dot(inversaB, x_N[:, k])
@@ -129,7 +126,6 @@ def faseI ():
 
         if saindo_da_base == -1:
             print("Não foi possível determinar a variável a sair da base.")
-            return
         else:
             print(f"Variável a sair da base: x_B{saindo_da_base + 1}") #x_b2 = x4
             passo = min_ratio
@@ -142,8 +138,11 @@ def faseI ():
     print(f'x_B:\n{x_B}')
     print(f'x_N:\n{x_N}')
 
+    for i in range(0, 2):
+        print(f'\ninteração: {i}\n')
+        faseII(x_B, x_N, x_chapeu_B, b)
 
-    return faseII(x_B, x_N, x_chapeu_B, b)
+
 
 
 
@@ -162,6 +161,7 @@ def faseII(x_B, x_N, x_chapeu_B, b):
     # Passo 2: {cálculo dos custos relativos}
     #     2.1) {vetor multiplicador simplex}
     cBT = fx
+    print(f'cBT: {cBT}')
     lambdaT = np.dot(cBT, inversaB)
     print(f'lambdaT: {lambdaT}')
 
@@ -179,7 +179,7 @@ def faseII(x_B, x_N, x_chapeu_B, b):
         print('Solução ótima encontrada.')
         #return 0
     else:
-        'Solução não é ótima.'
+        print('Solução não é ótima.')
         #return faseII()
 
     # Passo 4: {cálculo da direção simplex}
@@ -207,7 +207,10 @@ def faseII(x_B, x_N, x_chapeu_B, b):
             print("Não foi possível determinar a variável a sair da base.")
             return
         else:
-            print(f"Variável a sair da base: x_B{saindo_da_base + 1}") #x_b1 = x2
+            print(f"Variável a sair da base: x_B{saindo_da_base + 1}") #x_b1 = x5
+            if saindo_da_base == 0:
+                #fx = np.array([0, 0])
+                print(f'fx: {fx}')
             passo = min_ratio
             print(f"Passo: {passo}")
             print("Não é solução otima")
@@ -218,9 +221,6 @@ def faseII(x_B, x_N, x_chapeu_B, b):
 
     print(f'x_B:\n{x_B}')
     print(f'x_N:\n{x_N}')
-
-
-    return 0
 
 if __name__ == '__main__':
     print(verificacaoFaseI(obj))
