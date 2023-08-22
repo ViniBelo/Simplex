@@ -55,6 +55,8 @@ def verificacaoFaseI (obj):
     # Terceira verificação
     if sinal:
         return faseI()
+    else:
+        return 'Não é necessário entrar na Fase I'
 
 
 # Formulação do problema artificial
@@ -63,14 +65,18 @@ def formulaProblemaArtificial ():
     return 0
 
 # 2.2) {custos relativos}
-def calcular_custos_relativos(lambdaT, aNj):
+def calcular_custos_relativos(lambdaT, x_N, x_chapeu_N):
     custos_relativos = []
 
-    for j in range(len(lambdaT)):
-        custo_relativo = fx[j] - np.dot(lambdaT, aNj[:, j])
+    for j in range(3):
+        coluna_index = j
+        coluna = x_N[:, coluna_index]
+        print(f'coluna: {coluna}')
+        custo_relativo = x_chapeu_N[j] - np.dot(lambdaT, coluna)
         custos_relativos.append(custo_relativo)
     
     return custos_relativos
+
 
 # Início da iteração simplex - Fase I
 def faseI ():
@@ -80,6 +86,7 @@ def faseI ():
     x_chapeu_B = multiplicacaoDeMatrizes(b, inversaB)
     x_chapeu_N = np.zeros(x_N.shape[1])
     print(f'x_chapeu_B: {x_chapeu_B}')
+    print(f'x_chapeu_N: {x_chapeu_N}')
 
     # Passo 2: {cálculo dos custos relativos}
     #     2.1) {vetor multiplicador simplex}
@@ -88,7 +95,8 @@ def faseI ():
     print(f'lambdaT: {lambdaT}')
 
     #     2.2) {custos relativos}
-    custos_relativos = calcular_custos_relativos(lambdaT, x_N)
+    print(f'x_N:\n{x_N}')
+    custos_relativos = calcular_custos_relativos(lambdaT, x_N, x_chapeu_N)
     print(f'custos_relativos: {custos_relativos}')
 
     #     2.3) {determinação da variável a entrar na base}
@@ -97,13 +105,42 @@ def faseI ():
 
     # Passo 3: {teste de otimalidade}
     if all(custo >= 0 for custo in custos_relativos):
-        print("Solução ótima encontrada.")
-        return
-
+        print('Solução ótima encontrada.')
+        #return 0
+    else:
+        'Solução não é ótima.'
+        #return faseII()
     
+    # Passo 4: {cálculo da direção simplex}
+    y = np.dot(inversaB, x_N[:, k])
+    print(f'y = {y}')
 
+    # Passo 5: {determina¸c˜ao do passo e vari´avel a sair da base}
+    if all(y <= 0 for y in y):
+        print("Problema não tem solução ótima finita. Problema Original Infactível.")
+        return
+    else:
+        min_ratio = float('inf')
+        saindo_da_base = -1
 
+        for i in range(m):
+            if y[i] > 0:
+                print(f'ratio = {x_chapeu_B[i]} / {y[i]}')
+                ratio = x_chapeu_B[i] / y[i]
+                print(f'Resultado ratio: {ratio}')
+                if ratio < min_ratio:
+                    min_ratio = ratio
+                    saindo_da_base = i
 
+        if saindo_da_base == -1:
+            print("Não foi possível determinar a variável a sair da base.")
+            return
+        else:
+            print(f"Variável a sair da base: x_B{saindo_da_base + 1}") #x_b2 = x4
+            passo = min_ratio
+            print(f"Passo: {passo}")
+
+# def faseII():
 
 if __name__ == '__main__':
     print(verificacaoFaseI(obj))
