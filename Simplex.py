@@ -77,6 +77,10 @@ def calcular_custos_relativos(lambdaT, x_N, x_chapeu_N):
     
     return custos_relativos
 
+def trocaColunas(x_B, x_N, c_B, c_NB, i, k):
+    x_B[:, i], x_N[:, k] = x_N[:, k], x_B[:, i]  # Troca as colunas
+    c_B[i], c_NB[k] = c_NB[k], c_B[i]  # Atualiza os vetores de custos
+
 
 # Início da iteração simplex - Fase I
 def faseI ():
@@ -115,7 +119,7 @@ def faseI ():
     y = np.dot(inversaB, x_N[:, k])
     print(f'y = {y}')
 
-    # Passo 5: {determina¸c˜ao do passo e vari´avel a sair da base}
+    # Passo 5: {determinação do passo e variável a sair da base}
     if all(y <= 0 for y in y):
         print("Problema não tem solução ótima finita. Problema Original Infactível.")
         return
@@ -139,6 +143,15 @@ def faseI ():
             print(f"Variável a sair da base: x_B{saindo_da_base + 1}") #x_b2 = x4
             passo = min_ratio
             print(f"Passo: {passo}")
+
+    # Passo 6: {atualização: nova partição básica, troque a i-ésima coluna de B pela k-ésima coluna de N}
+    trocaColunas(x_B, x_N, x_chapeu_B, x_chapeu_N, saindo_da_base, k)
+    print("Partição básica atualizada:")
+
+    print(f'x_B:\n{x_B}')
+    print(f'x_N:\n{x_N}')
+
+
 
 # def faseII():
 
