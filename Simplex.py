@@ -21,22 +21,6 @@ sinal = ['=', '<=']
 m = x_N.shape[0]
 n = x_B.shape[0] * x_B.shape[1]
 
-# Precisamos entender as variáveis b e n.
-# def troca(mat, x_B, b, x_N, n, i, j):
-#     aux = b[i]
-#     b[i] = n[j]
-#     n[j] = aux
-#     x_B = attSubMatriz(mat, b)
-#     x_N = attSubMatriz(mat, n)
-#     return x_B, b, x_N, n
-
-# def Multiplicacao_vetores(vetorA: list, vetorB:list) -> float:
-#     res = np.dot(vetorA, vetorB)
-#     return res
-
-def multiplicacaoDeMatrizes(matrizA, matrizB):
-    return np.matmul(matrizA, matrizB)
-
 # Verificação da necessidade da Fase I
 def verificacaoFaseI (obj):
     # Primeira verificação
@@ -78,8 +62,15 @@ def calcular_custos_relativos(lambdaT, x_N, x_chapeu_N):
     return custos_relativos
 
 def trocaColunas(x_B, x_N, c_B, c_NB, i, k):
+    # Salvar a segunda coluna de x_B
+    aux = x_B[:, i].copy()
+    
     x_B[:, i], x_N[:, k] = x_N[:, k], x_B[:, i]  # Troca as colunas
     c_B[i], c_NB[k] = c_NB[k], c_B[i]  # Atualiza os vetores de custos
+    
+    # Atualizar a primeira coluna de x_N com a segunda coluna de x_B
+    x_N[:, k] = aux
+
 
 
 # Início da iteração simplex - Fase I
@@ -87,7 +78,7 @@ def faseI ():
     # Passo 1: {cálculo da solução básica}
     x_chapeu_B = np.zeros(n)
     inversaB = np.linalg.inv(x_B)
-    x_chapeu_B = multiplicacaoDeMatrizes(b, inversaB)
+    x_chapeu_B = np.dot(b, inversaB)
     x_chapeu_N = np.zeros(x_N.shape[1])
     print(f'x_chapeu_B: {x_chapeu_B}')
     print(f'x_chapeu_N: {x_chapeu_N}')
@@ -95,7 +86,7 @@ def faseI ():
     # Passo 2: {cálculo dos custos relativos}
     #     2.1) {vetor multiplicador simplex}
     cBT = fx
-    lambdaT = multiplicacaoDeMatrizes(inversaB, cBT)
+    lambdaT = np.dot(inversaB, cBT)
     print(f'lambdaT: {lambdaT}')
 
     #     2.2) {custos relativos}
@@ -152,8 +143,84 @@ def faseI ():
     print(f'x_N:\n{x_N}')
 
 
+    return faseII(x_B, x_N, x_chapeu_B, b)
 
-# def faseII():
+
+
+def faseII(x_B, x_N, x_chapeu_B, b):
+    # Passo 1: {cálculo da solução básica}
+    print(f'diabedo:\n{x_B}')
+
+    inversaB = np.linalg.inv(x_B)
+    print(f'x_B inversa: \n{inversaB}')
+
+    x_chapeu_B = np.dot(inversaB, b)
+    x_chapeu_N = np.zeros(x_N.shape[1])
+    print(f'x_chapeu_B:\n {x_chapeu_B}')
+    print(f'x_chapeu_N:\n {x_chapeu_N}')
+
+    # Passo 2: {cálculo dos custos relativos}
+    #     2.1) {vetor multiplicador simplex}
+    cBT = fx
+    lambdaT = np.dot(cBT, inversaB)
+    print(f'lambdaT: {lambdaT}')
+
+    #     2.2) {custos relativos}
+    print(f'x_N:\n{x_N}')
+    custos_relativos = calcular_custos_relativos(lambdaT, x_N, x_chapeu_N)
+    print(f'custos_relativos: {custos_relativos}')
+
+    #     2.3) {determinação da variável a entrar na base}
+    k = np.argmin(custos_relativos)  # Índice da variável com menor custo relativo
+    print(f'Variável a entrar na base: x_N{k+1}')
+
+    # Passo 3: {teste de otimalidade}
+    if all(custo >= 0 for custo in custos_relativos):
+        print('Solução ótima encontrada.')
+        #return 0
+    else:
+        'Solução não é ótima.'
+        #return faseII()
+
+    # Passo 4: {cálculo da direção simplex}
+    y = np.dot(inversaB, x_N[:, k])
+    print(f'y = {y}')
+
+    # Passo 5: {determinação do passo e variável a sair da base}
+    if all(y <= 0 for y in y):
+        print("Problema não tem solução ótima finita. Problema Original Infactível.")
+        return
+    else:
+        min_ratio = float('inf')
+        saindo_da_base = -1
+
+        for i in range(m):
+            if y[i] > 0:
+                print(f'ratio = {x_chapeu_B[i]} / {y[i]}')
+                ratio = x_chapeu_B[i] / y[i]
+                print(f'Resultado ratio: {ratio}')
+                if ratio < min_ratio:
+                    min_ratio = ratio
+                    saindo_da_base = i
+
+        if saindo_da_base == -1:
+            print("Não foi possível determinar a variável a sair da base.")
+            return
+        else:
+            print(f"Variável a sair da base: x_B{saindo_da_base + 1}") #x_b1 = x2
+            passo = min_ratio
+            print(f"Passo: {passo}")
+            print("Não é solução otima")
+
+    # Passo 6: {atualização: nova partição básica, troque a i-ésima coluna de B pela k-ésima coluna de N}
+    trocaColunas(x_B, x_N, x_chapeu_B, x_chapeu_N, saindo_da_base, k)
+    print("Partição básica atualizada:")
+
+    print(f'x_B:\n{x_B}')
+    print(f'x_N:\n{x_N}')
+
+
+    return 0
 
 if __name__ == '__main__':
     print(verificacaoFaseI(obj))
