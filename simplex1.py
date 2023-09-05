@@ -14,16 +14,10 @@ def print_resultado(funciona, otima, basicas, fx):
         print(', '.join(
             [f'x{basicas[i]} = {otima[i]}'
                 for i in range(len(otima))]) + f', z = {resultado}')
-        print(
-            "\n Finalizado!"
-        )
+        print("\n Finalizado!")
     else:
-        print(
-            "Em algum momento não foi possível fazer a inversa ou a direção simplex é <= 0."
-        )
-        print(
-            "Finalizado!"
-        )
+        print("Em algum momento não foi possível fazer a inversa ou a direção simplex é <= 0.")
+        print("Finalizado!")
 
 # Função para calcular as submatrizes básicas e não básicas
 def calcular_submatriz(matrizA : list, vetorX : list) -> float:
@@ -187,10 +181,10 @@ def troca_linhas_k_l(basicas : list, naoBasicas : list, k: int, l : int) -> list
 
 # calculo funcao final
 def calculo_funcaoZ(funcaoObjetivo : list, xRelativoBasico:list, basicas:list) -> float:
-    resultado = sum(funcaoObjetivo[basicas[i]]*xRelativoBasico[i] for i in range(len(xRelativoBasico)))
+    resultado = sum(funcaoObjetivo[basicas[i]] * xRelativoBasico[i] for i in range(len(xRelativoBasico)))
     return resultado
 
-#Simplex
+# Simplex
 def calculo_simplex(tipoProblema, funcaoObjetivo, restricoes):
     it = 0
     maxit = 25
@@ -243,16 +237,12 @@ def calculo_simplex(tipoProblema, funcaoObjetivo, restricoes):
         print('Custo relativo nao basico: ', custoRelativoNaoBasico)
         k = calcula_k(custoRelativoNaoBasico)
         if verificar_otimo(custoRelativoNaoBasico, k):
-            print(
-                '\nOtimo!'
-            )
+            print('\nOtimo!')
             otima = xRelativo
             funciona = True
             break
-        print(
-            '\nNao otimo!'
-        )
-        y= direcao_simplex(matrizBasicaInversa, matrizA, k, naoBasicas)
+        print('\nNao otimo!')
+        y = direcao_simplex(matrizBasicaInversa, matrizA, k, naoBasicas)
         l = calcula_l(y, xRelativo)
         if isinstance(l, bool) and l is False:
             funciona = False
@@ -268,7 +258,7 @@ if __name__ == "__main__":
         [7, -5, '<=', 13],
         [3, 2, '<=', 17],
         [0, 1, '<=', 2],
-        [1, 0, '>=', 4],
+        [1, 0, '>=', 4], 
         # [1, 0,'<=',3],
     ]
     print("\nCalculo 1")
