@@ -252,7 +252,7 @@ def calculo_simplex(tipoProblema, funcaoObjetivo, restricoes):
     print_resultado(funciona, otima, basicas, fx)
 
 if __name__ == "__main__":
-    tipoProblema = 'min'
+    '''tipoProblema = 'min'
     funcaoObjetivo = [-5,-2]
     restricoes = [
         [7, -5, '<=', 13],
@@ -260,6 +260,42 @@ if __name__ == "__main__":
         [0, 1, '<=', 2],
         [1, 0, '>=', 4], 
         # [1, 0,'<=',3],
+    ]'''
+    '''
+    # 5.7 a)
+    tipoProblema = 'max'
+    funcaoObjetivo = [1, 1]
+    restricoes = [
+        [2, 1, '<=', 18],
+        [-1, 2, '<=', 4],
+        [3, -6, '<=', 12],
     ]
+    '''
+    '''
+    # 5.7 b)
+    tipoProblema = 'max'
+    funcaoObjetivo = [6, 2]
+    restricoes = [
+        [3, 1, '<=', 33],
+        [1, 1, '<=', 13],
+    ]
+    '''
+    '''
+    # 5.7 f)
+    tipoProblema = 'max'
+    funcaoObjetivo = [-1, 2]
+    restricoes = [
+        [-2, 1, '<=', 3],
+        [3, 4, '<=', 5],
+        [1, -1, '<=', 2],
+    ]
+    '''
+    tipoProblema = 'max'
+    funcaoObjetivo = [1, -1, 2]
+    restricoes = [
+        [1, 1, 1, '=', 3],
+        [2, -1, 3, '<=', 4],
+    ]
+
     print("\nCalculo 1")
     calculo_simplex(tipoProblema, funcaoObjetivo, restricoes)
