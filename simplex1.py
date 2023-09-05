@@ -40,7 +40,7 @@ def troca_linhas(matriz, i, j):
     matriz[i], matriz[j] = matriz[j], matriz[i]
 
 # Função para calcular a inversa 
-def calcular_inversa(matrizA : list) -> float:
+def calcular_inversa(matrizA: list):
     n = len(matrizA)
     I = np.identity(n)
     det = np.linalg.det(matrizA)
@@ -57,7 +57,7 @@ def calcular_inversa(matrizA : list) -> float:
                         break
                 else:
                     print('Matriz não possui inversa')
-                    break
+                    return None
 
                 pivo = AID[i, i]
 
@@ -69,10 +69,11 @@ def calcular_inversa(matrizA : list) -> float:
                     AID[j] -= multiplicador * AID[i]
 
         inversa = AID[:, n:]
-
-        print(f'Inversa:\n{inversa}')
+        return inversa
     else:
         print('Matriz não possui inversa')
+        return None
+
 
 # Simplex
 # Fase I
